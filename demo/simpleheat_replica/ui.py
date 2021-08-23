@@ -107,7 +107,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Simpleheat Demo Replica"))
-        self.header.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600;\">Heqtmap</span><span style=\" font-size:12pt;\"> is a tiny and slow PyQt heatmap library. More on </span><a href=\"https://github.com/precondition/simpleheat\"><span style=\" font-size:12pt; text-decoration: underline; color:#0000ff;\">precondition / heqtmap</span></a></p></body></html>"))
+        self.header.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600;\">Heqtmap</span><span style=\" font-size:12pt;\"> is a tiny and fast PyQt heatmap library. More on </span><a href=\"https://github.com/precondition/simpleheat\"><span style=\" font-size:12pt; text-decoration: underline; color:#0000ff;\">precondition / heqtmap</span></a></p></body></html>"))
         self.blurLabel.setText(_translate("MainWindow", "Blur"))
         self.radiusLabel.setText(_translate("MainWindow", "Radius"))
 from canvas_class import Canvas

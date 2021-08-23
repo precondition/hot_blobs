@@ -3,7 +3,7 @@ from PyQt5.QtGui import QPainter, QBrush, QPen, QLinearGradient, QColor, QPixmap
 from PyQt5.QtCore import Qt, QPoint, QRect
 import sys
 sys.path.append("../..")
-from heqtmap import Heatmap, qt_image_to_array
+from heqtmap import Heqtmap, qt_image_to_array
 from simpleheat_data import data
 from ui import Ui_MainWindow
 
@@ -13,7 +13,7 @@ class TheWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         hashable_data = {(x, y) : value for x, y, value in data}
-        self.hm = Heatmap(self.ui.canvas.width(), self.ui.canvas.height()).set_data(hashable_data).set_max(18)
+        self.hm = Heqtmap(self.ui.canvas.width(), self.ui.canvas.height()).data(hashable_data).max(18)
         self.ui.canvas.set_hm(self.hm)
         self.ui.canvas.setPixmap(QPixmap(self.hm.get_image()))
         self.ui.blurSlider.valueChanged[int].connect(self.changeBlur)
@@ -25,12 +25,12 @@ class TheWindow(QMainWindow):
 
     def changeBlur(self, new_blur):
         self.blur = new_blur + (new_blur % 2 == 0)
-        self.hm.set_stamp(r=self.radius, blur=self.blur)
+        self.hm.stamp(r=self.radius, blur=self.blur)
         self.ui.canvas.setPixmap(QPixmap(self.hm.get_image()))
 
     def changeRadius(self, new_radius):
         self.radius = new_radius
-        self.hm.set_stamp(r=self.radius, blur=self.blur)
+        self.hm.stamp(r=self.radius, blur=self.blur)
         self.ui.canvas.setPixmap(QPixmap(self.hm.get_image()))
 
 
