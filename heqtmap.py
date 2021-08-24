@@ -125,11 +125,11 @@ class Heqtmap:
         return self
 
     def add(self, data: Iterable[Tuple[int]]) -> 'Heqtmap':
-        self._data.update(data)
         for data_point in data:
             assert len(data_point) == 2, f"The data point \"{data_point}\" is not a point in 2D space! Did you forget to enclose your (x, y) tuple in a list when feeding it into this method?"
             if self._data[data_point] > self._max:
                 self._max = self._data[data_point]
+        self._data.update(data)
         return self
 
     def clear(self) -> 'Heqtmap':
@@ -137,6 +137,7 @@ class Heqtmap:
         return self
 
     def max(self, maximum: int) -> 'Heqtmap':
+        assert maximum > 0, "The maximum must be a strictly positive value!"
         self._max = maximum
         return self
 
@@ -155,8 +156,9 @@ class Heqtmap:
         Create a grayscale blurred circle image that we'll use like
         a rubber stamp for drawing points
         """
+        assert r > 0, "The radius must be a strictly positive value!"
         assert isinstance(blur, int) and blur > 0 and blur % 2 == 1, \
-                f"The blur factor must be a positive odd integer."
+                f"The blur factor must be a strictly positive odd integer."
         # In accordance to the three-sigma rule, all we need to capture 99.7% of a circle
         # blurred with a Gaussian filter is a bigger circle whose radius is that of the
         # smaller one plus 3σ of the used Gaussian function.
@@ -218,6 +220,7 @@ class Heqtmap:
         return qt_image_to_array(canvas)
 
     def _colorized(self, pixels: np.ndarray, gradient: np.ndarray) -> np.ndarray:
+        assert gradient.shape == (256, 1, 4), f"The gradient must be a 256x1x4 numpy array! The provided array is {gradient.shape}."
         # Mask to select only the alpha value of the gradient image which is a 256×1×4 (h×w×depth) image
         mask = np.array([[[False, False, False, True]]]*256)
         indices = np.indices(gradient.shape)[0]
@@ -230,6 +233,7 @@ class Heqtmap:
         return gradient[opacities][:, :, 0, :]
 
     def get_image(self, min_opacity: float = 0.05) -> QImage:
+        assert 0 <= min_opacity and min_opacity <= 1, "The minimum opacity must be a float in the range [0;1]."
         if self._stamp is None:
             start = time()
             self.stamp()
