@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt, QPoint, QRect
 from PyQt5.QtGui import QPainter, QBrush, QLinearGradient, QColor, QPixmap, QImage
-from typing import Dict, Union, Tuple, Iterable
+from typing import Dict, Union, Tuple, Iterable, Hashable
 from collections import Counter
 import numpy as np
 import copy
@@ -14,7 +14,7 @@ def qt_image_to_array(img: QImage, share_memory=False) -> np.ndarray:
 
    If share_memory is True, the numpy array and the QImage is shared.
    Be careful: make sure the numpy array is destroyed before the image,
-   otherwise the array will point to unreserved memory!!
+   otherwise the array will point to unreserved memory!
 
    NOTE: Despite the format of the image being Format_(A)RGB32,
          each element of the matrix is BGRA.
@@ -128,7 +128,7 @@ class Heqtmap:
         if isinstance(data, tuple) and isinstance(data[0], int):
             data = [data]
         for data_point in data:
-            assert len(data_point) == 2, f"The data point \"{data_point}\" is not a point in 2D space! Did you forget to enclose your (x, y) tuple in a list when feeding it into this method?"
+            assert isinstance(data_point, Hashable) and len(data_point) == 2, f"The data point \"{data_point}\" is not a point in 2D space!"
             if self._data[data_point] > self._max:
                 self._max = self._data[data_point]
         self._data.update(data)
