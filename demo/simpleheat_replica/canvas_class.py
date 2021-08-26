@@ -13,7 +13,7 @@ class Canvas(QLabel):
         super().setPixmap(pixmap)
 
     def mouseMoveEvent(self, event):
-        self.hm.add([(event.x(), event.y())])
+        self.hm.add((event.x(), event.y()))
         self.setPixmap(QPixmap(self.hm.get_image()))
 
     def paintEvent(self, event):

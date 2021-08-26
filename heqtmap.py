@@ -125,6 +125,8 @@ class Heqtmap:
         return self
 
     def add(self, data: Iterable[Tuple[int]]) -> 'Heqtmap':
+        if isinstance(data, tuple) and isinstance(data[0], int):
+            data = [data]
         for data_point in data:
             assert len(data_point) == 2, f"The data point \"{data_point}\" is not a point in 2D space! Did you forget to enclose your (x, y) tuple in a list when feeding it into this method?"
             if self._data[data_point] > self._max:
@@ -147,7 +149,7 @@ class Heqtmap:
         deviation from the kernel size aka the blur factor in our case.
         Source: https://docs.opencv.org/2.4/modules/imgproc/doc/filtering.html#getgaussiankernel
 
-        The output must be an integer and to do that `ceil` is used but that's an arbitrary choice.
+        The output must be an integer and to do that `ceil` is used to round up and thus avoid 0.
         """
         return ceil(0.3*((x-1)*0.5 - 1) + 0.8)
 
