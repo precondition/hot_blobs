@@ -39,12 +39,20 @@ def qt_image_to_array(img: QImage, share_memory=False) -> np.ndarray:
 
 class PresetGradients:
 
+    # default_gradient = {
+        # 0.4: "blue",
+        # 0.6: "cyan",
+        # 0.7: "lime",
+        # 0.8: "yellow",
+        # 1.0: "red"
+    # }
+
     default_gradient = {
-        0.4: "blue",
-        0.6: "cyan",
-        0.7: "lime",
-        0.8: "yellow",
-        1.0: "red"
+        0.4: "#0000FF",
+        0.6: "#00FFFF",
+        0.7: "#00FF00",
+        0.8: "#FFFF00",
+        1.0: "#FF0000"
     }
 
     sweet_period = {
