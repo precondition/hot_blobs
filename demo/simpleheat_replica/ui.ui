@@ -36,7 +36,7 @@
        <string notr="true"/>
       </property>
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Heqtmap&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; is a tiny and fast PyQt heatmap library. More on &lt;/span&gt;&lt;a href=&quot;https://github.com/precondition/simpleheat&quot;&gt;&lt;span style=&quot; font-size:12pt; text-decoration: underline; color:#0000ff;&quot;&gt;precondition / heqtmap&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Heqtmap&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; is a tiny and fast heatmap library. More on &lt;/span&gt;&lt;a href=&quot;https://github.com/precondition/simpleheat&quot;&gt;&lt;span style=&quot; font-size:12pt; text-decoration: underline; color:#0000ff;&quot;&gt;precondition / hot_blobs&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="wordWrap">
        <bool>true</bool>

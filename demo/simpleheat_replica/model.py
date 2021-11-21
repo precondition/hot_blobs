@@ -3,7 +3,7 @@ from PyQt5.QtGui import QPainter, QBrush, QPen, QLinearGradient, QColor, QPixmap
 from PyQt5.QtCore import Qt, QPoint, QRect
 import sys
 sys.path.append("../..")
-from heqtmap import Heqtmap, qt_image_to_array
+from hot_blobs import Heqtmap, qt_image_to_array
 from simpleheat_data import data
 from ui import Ui_MainWindow
 
