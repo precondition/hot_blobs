@@ -3,7 +3,7 @@ from PyQt5.QtGui import QPainter, QBrush, QPen, QLinearGradient, QColor, QPixmap
 from PyQt5.QtCore import Qt, QPoint, QRect
 import sys
 sys.path.append("../..")
-from hot_blobs import Heqtmap, qt_image_to_array
+from hot_blobs import Heatmap, qt_image_to_array
 from simpleheat_data import data
 from ui import Ui_MainWindow
 
@@ -13,7 +13,7 @@ class TheWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         hashable_data = {(x, y) : value for x, y, value in data}
-        self.hm = Heqtmap(self.ui.canvas.width(), self.ui.canvas.height()).data(hashable_data).max(18)
+        self.hm = Heatmap(self.ui.canvas.width(), self.ui.canvas.height()).data(hashable_data).max(18)
         self.ui.canvas.set_hm(self.hm)
         self.ui.canvas.setPixmap(QPixmap(self.hm.get_image()))
         self.ui.blurSlider.valueChanged[int].connect(self.changeBlur)

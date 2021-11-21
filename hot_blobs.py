@@ -103,7 +103,7 @@ class PresetGradients:
     complete_list = [default_gradient, sweet_period, fabled_sunset, dense_water, sublime, argon, king_yna]
 
 
-class Heqtmap:
+class Heatmap:
     """
     Class for producing a heatmap in the form of a QImage.
     The data used to produce the heatmap is input as an iterable of
@@ -125,14 +125,14 @@ class Heqtmap:
         self._stamp: np.ndarray = None
         self._chosen_gradient: Dict[float, Union[str, QColor]] = PresetGradients.default_gradient
 
-    def data(self, data: Iterable[Tuple[int]], compute_max: bool = True) -> 'Heqtmap':
+    def data(self, data: Iterable[Tuple[int]], compute_max: bool = True) -> 'Heatmap':
         self._data = Counter(data)
         if compute_max:
             if len(self._data) > 0:
                 self._max = max(self._data.values())
         return self
 
-    def add(self, data: Iterable[Tuple[int]]) -> 'Heqtmap':
+    def add(self, data: Iterable[Tuple[int]]) -> 'Heatmap':
         """Adds one or more data points to the heatmap
 
         Parameters
@@ -161,7 +161,7 @@ class Heqtmap:
         self._data.update(data)
         return self
 
-    def clear(self) -> 'Heqtmap':
+    def clear(self) -> 'Heatmap':
         """Clears all heatmap data points.
 
         Returns
@@ -173,7 +173,7 @@ class Heqtmap:
         self._data = Counter()
         return self
 
-    def max(self, maximum: int) -> 'Heqtmap':
+    def max(self, maximum: int) -> 'Heatmap':
         """Sets the maximum value with which to normalise the heatmap data points.
 
         Params
@@ -217,7 +217,7 @@ class Heqtmap:
         """
         return ceil(0.3*((x-1)*0.5 - 1) + 0.8)
 
-    def stamp(self, r: int = 25, blur: int = 51) -> 'Heqtmap':
+    def stamp(self, r: int = 25, blur: int = 51) -> 'Heatmap':
         """Creates a grayscale blurred circle image used like a rubber stamp for 
         drawing points.
 
@@ -267,7 +267,7 @@ class Heqtmap:
         self._stamp = blurred_image_data
         return self
 
-    def resize(self, w: int, h: int) -> 'Heqtmap':
+    def resize(self, w: int, h: int) -> 'Heatmap':
         """Resizes the dimensions of the heatmap.
 
         Data points that are cropped out after the resize *remain* in the 
@@ -290,7 +290,7 @@ class Heqtmap:
         self.height = h
         return self
 
-    def gradient(self, grad: Dict[float, Union[str, QColor]]) -> 'Heqtmap':
+    def gradient(self, grad: Dict[float, Union[str, QColor]]) -> 'Heatmap':
         """Sets the color gradient to use in the heatmap to `grad`.
 
         Params
