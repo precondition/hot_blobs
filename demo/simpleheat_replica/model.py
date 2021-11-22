@@ -20,7 +20,7 @@ class TheWindow(QMainWindow):
         self.ui.radiusSlider.valueChanged[int].connect(self.changeRadius)
 
         self.radius = 25
-        self.blur = 15
+        self.blur = 51
 
 
     def changeBlur(self, new_blur):
