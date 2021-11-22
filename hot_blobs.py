@@ -125,19 +125,19 @@ class Heatmap:
         self._stamp: np.ndarray = None
         self._chosen_gradient: Dict[float, Union[str, QColor]] = PresetGradients.default_gradient
 
-    def data(self, data: Iterable[Tuple[int]], compute_max: bool = True) -> 'Heatmap':
+    def data(self, data: Union[Iterable[Tuple[int, int]], Dict[Tuple[int, int], int]], compute_max: bool = True) -> 'Heatmap':
         self._data = Counter(data)
         if compute_max:
             if len(self._data) > 0:
                 self._max = max(self._data.values())
         return self
 
-    def add(self, data: Iterable[Tuple[int]]) -> 'Heatmap':
+    def add(self, data: Iterable[Tuple[int, int]]) -> 'Heatmap':
         """Adds one or more data points to the heatmap
 
         Parameters
         ----------
-        data : Tuple[int] or Iterable[Tuple[int]]
+        data : Tuple[int, int] or Iterable[Tuple[int, int]]
             The new data point(s) to add. It can be either a single tuple `(x, y)`
             or an iterable of tuples `[(a, b), (c, d), ...]`.
 
