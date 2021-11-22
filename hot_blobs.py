@@ -341,22 +341,22 @@ class Heatmap:
 
         return qt_image_to_array(canvas)
 
-    def _colorized(self, opacities: np.ndarray, gradient: np.ndarray) -> np.ndarray:
-        """Colorizes the black and white heatmap (`opacities`) with the color 
+    def _colorized(self, bw_heatmap: np.ndarray, gradient: np.ndarray) -> np.ndarray:
+        """Colorizes the black and white heatmap (`bw_heatmap`) with the color
         of the chosen gradient (`gradient`).
 
-        A bijective function maps each possible opacity value to each possible 
+        A bijective function maps each possible opacity value to each possible
         gradient color.
 
-        For example, if a "pixel" in the black and white heatmap picture has a 
-        value of 200, it will be transformed into the 200th color of the linear 
-        color gradient but its opacity will drop from 255 to 200, the original 
+        For example, if a "pixel" in the black and white heatmap picture has a
+        value of 200, it will be transformed into the 200th color of the linear
+        color gradient but its opacity will drop from 255 to 200, the original
         opacity value of this pixel.
         [200] -> [80, 08, 5, 255] -> [80, 08, 5, 200]
 
         Params
         ------
-        opacities: np.ndarray
+        bw_heatmap: np.ndarray
             self.w×self.h×1 array of uint8's representing the black and white heatmap.
 
         grad: Dict[float, str] or Dict[float, (r, g, b)], default=PresetGradients.default_gradient
@@ -381,7 +381,7 @@ class Heatmap:
         # Get column vector of the alpha values of each pixel in the grayscale heatmap
         # A fourth extra axis of length 1 is produced so we index it to remove it
         # and thus get an array that has the same dimensions as the background image.
-        return gradient[opacities][:, :, 0, :]
+        return gradient[bw_heatmap][:, :, 0, :]
 
     def _draw_stamp(self, canvas: np.ndarray, x: int, y: int, opacity: float) -> None:
         if y >= canvas.shape[0] or x >= canvas.shape[1]:
