@@ -105,7 +105,7 @@ class PresetGradients:
 
 class Heatmap:
     """
-    Class for producing a heatmap in the form of a QImage.
+    Class for producing a heatmap in the form of a RGBA uint8 matrix.
     The data used to produce the heatmap is input as an iterable of
     non-unique (x, y) tuples representing the coordinates of the
     heatmap image — for info, the point (0,0) is in the top left corner.
@@ -126,6 +126,7 @@ class Heatmap:
         self._chosen_gradient: Dict[float, Union[str, QColor]] = PresetGradients.default_gradient
 
     def data(self, data: Union[Iterable[Tuple[int, int]], Dict[Tuple[int, int], int]], compute_max: bool = True) -> 'Heatmap':
+        """TODO docstring"""
         self._data = Counter(data)
         if compute_max:
             if len(self._data) > 0:
@@ -143,20 +144,24 @@ class Heatmap:
 
         Returns
         -------
-        Object
+        Heatmap
             Instance of the Heatmap object for function chaining
 
         Raises
         -----
-        AssertionError
-            If the data points are not hashable or points in 2D space.
+        TypeError
+            If the data points are not hashable
+        ValueError
+            If the data points are not points in 2D space.
         """
 
         if isinstance(data, tuple) and isinstance(data[0], int):
             data = [data]
         for data_point in data:
-            assert isinstance(data_point, Hashable) and len(data_point) == 2,\ 
-            f"The data point \"{data_point}\" is not a point in 2D space!"
+            if not isinstance(data_point, Hashable):
+                raise TypeError("The data point must be hashable!")
+            if len(data_point) != 2:
+                raise ValueError(f"The data point \"{data_point}\" is not a point in 2D space!")
             if self._data.get(data_point, 0)+1 > self._max:
                 self._max = self._data.get(data_point, 0)+1
         self._data.update(data)
@@ -167,7 +172,7 @@ class Heatmap:
 
         Returns
         -------
-        Object
+        Heatmap
             Instance of the Heatmap object for function chaining
         """
 
@@ -184,16 +189,17 @@ class Heatmap:
 
         Returns
         -------
-        Object
+        Heatmap
             Instance of the Heatmap object for function chaining
 
         Raises
         ------
-        AssertionError
+        ValueError
             if `maximum` <= 0
         """
 
-        assert maximum > 0, "The maximum must be a strictly positive value!"
+        if maximum <= 0:
+            raise ValueError("The maximum must be a strictly positive value!")
         self._max = maximum
         return self
 
@@ -232,14 +238,14 @@ class Heatmap:
 
         Returns
         -------
-        Object
+        Heatmap
             Instance of the Heatmap object for function chaining
 
         Raises
         -----
-        AssertionError
+        ValueError
             if `r` <= 0;
-            if blur is not a strictly positive integer.
+            if blur is not a positive integer.
 
         Notes
         -----
@@ -248,8 +254,10 @@ class Heatmap:
         constraint away by accepting any strictly positive integer, be it even or odd, and simply
         increments any even `blur` value received.
         """
-        assert r > 0, "The radius must be a strictly positive value!"
-        assert isinstance(blur, int) and blur > 0, f"The blur factor must be a strictly positive integer."
+        if r <= 0:
+            raise ValueError("The radius must be a strictly positive value!")
+        if not isinstance(blur, int) and blur < 0:
+            raise ValueError(f"The blur factor must be a positive integer.")
         blur += (blur-1) % 2  # Force blur to be odd
 
         # In accordance to the three-sigma rule, all we need to capture 99.7% of a circle
@@ -284,7 +292,7 @@ class Heatmap:
 
         Returns
         -------
-        Object
+        Heatmap
             Instance of the Heatmap object for function chaining
         """
         self.width = w
@@ -302,7 +310,7 @@ class Heatmap:
 
         Returns
         -------
-        Object
+        Heatmap
             Instance of the Heatmap object for function chaining
         """
         self._chosen_gradient = grad
@@ -325,8 +333,8 @@ class Heatmap:
 
         canvas: QImage = QImage(1, 256, QImage.Format.Format_RGB32)
         painter: QPainter = QPainter(canvas)
-        first_point: QPoint = QPoint(0,0)
-        second_point: QPoint = QPoint(0,256)
+        first_point: QPoint = QPoint(0, 0)
+        second_point: QPoint = QPoint(0, 256)
         gradient: QLinearGradient = QLinearGradient(first_point, second_point)
         canvas.width = 1
         canvas.height = 256
@@ -339,9 +347,10 @@ class Heatmap:
         painter.fillRect(QRect(first_point, second_point), brush)
         painter.end()
 
-        return qt_image_to_array(canvas)
+        return cv2.cvtColor(qt_image_to_array(canvas), cv2.COLOR_BGRA2RGBA)
 
-    def _colorized(self, bw_heatmap: np.ndarray, gradient: np.ndarray) -> np.ndarray:
+    @staticmethod
+    def _colorized(bw_heatmap: np.ndarray, gradient: np.ndarray) -> np.ndarray:
         """Colorizes the black and white heatmap (`bw_heatmap`) with the color
         of the chosen gradient (`gradient`).
 
@@ -398,7 +407,7 @@ class Heatmap:
         canvas[max(0, y):y+self._stamp.shape[0], max(0, x):x+self._stamp.shape[1]] = stamped_cropped_canvas
 
     #TODO: rename to "draw_image"
-    def get_image(self, min_opacity: float = 0.05) -> QImage:
+    def generate_image(self, min_opacity: float = 0.05) -> np.ndarray:
         """Generates the final heatmap image.
 
         This is the main method that generates the stamp (template of the hot blobs) if it hasn't already been generated,
@@ -414,8 +423,8 @@ class Heatmap:
 
         Returns
         -------
-        QImage
-            ARGB32 QImage of the final heatmap overlay.
+        np.ndarray
+            width×height×4 image/matrix of the final heatmap overlay in RGBA format.
         """
         assert 0 <= min_opacity and min_opacity <= 1, "The minimum opacity must be a float in the range [0;1]."
         if self._stamp is None:
@@ -443,6 +452,5 @@ class Heatmap:
         colorized_image_data = self._colorized(image_data, grad)
         end = time()
         print(f"Colorizing the heatmap took {(end - start)*1000:.10f} milliseconds!")
-        img: QImage = QImage(colorized_image_data, colorized_image_data.shape[1], colorized_image_data.shape[0], QImage.Format_ARGB32)
-        return img
+        return colorized_image_data
 
