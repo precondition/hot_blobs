@@ -155,9 +155,10 @@ class Heatmap:
         if isinstance(data, tuple) and isinstance(data[0], int):
             data = [data]
         for data_point in data:
-            assert isinstance(data_point, Hashable) and len(data_point) == 2, f"The data point \"{data_point}\" is not a point in 2D space!"
-            if self._data[data_point] > self._max:
-                self._max = self._data[data_point]
+            assert isinstance(data_point, Hashable) and len(data_point) == 2,\ 
+            f"The data point \"{data_point}\" is not a point in 2D space!"
+            if self._data.get(data_point, 0)+1 > self._max:
+                self._max = self._data.get(data_point, 0)+1
         self._data.update(data)
         return self
 
