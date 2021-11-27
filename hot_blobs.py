@@ -103,7 +103,22 @@ class Heatmap:
         self._chosen_gradient: Dict[float, Union[str, RGB_Tuple]] = PresetGradients.default_gradient
 
     def data(self, data: Union[Iterable[Tuple[int, int]], Dict[Tuple[int, int], int]], compute_max: bool = True) -> 'Heatmap':
-        """TODO docstring"""
+        """Sets heatmap data points to `data` and compute the maximum value (if asked)
+
+        Params
+        ------
+        data: Union[Iterable[Tuple[int, int]], Dict[Tuple[int, int], int]]
+            Collection of data points to feed into the heatmap library
+
+        compute_max: bool, default=True
+            If enabled, set the heatmap max value to that of the `data` collection
+
+        Returns
+        -------
+        Heatmap
+            Instance of the Heatmap object for function chaining
+        """
+
         self._data = Counter(data)
         if compute_max:
             if len(self._data) > 0:
