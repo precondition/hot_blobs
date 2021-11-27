@@ -291,6 +291,9 @@ class Heatmap:
     def _gen_gradient(self, grad: Dict[float, str] = PresetGradients.default_gradient) -> np.ndarray:
         """Generates a 256×1×4 linear gradient image in RGBA format.
 
+        Linear interpolation in the RGB colorspace is used to interpolate between
+        the color stops.
+
         Params
         ------
         grad: Dict[float, str] or Dict[float, (r, g, b)], default=PresetGradients.default_gradient
@@ -302,27 +305,32 @@ class Heatmap:
         np.ndarray
             256×1×4 numpy array with the alpha channel ([:, :, 3]) all equal to 255.
         """
+        grad[0.0] = grad.get(0.0, "#000000")  # default starting color is black
+        # Converting dict_values to tuple to allow indexing
+        numeric_stops, color_stops = zip(*sorted(grad.items()))
+        linspaces: List[np.ndarray] = []
+        total_steps: int = 0
+        for i in range(len(grad)-1):
+            is_last_color_pair: bool = (i == len(grad)-2)
+            # Outer round can't be numpy's because n_steps needs to be an int
+            n_steps: int = round(np.round(numeric_stops[i+1]*256, 2) - np.round(numeric_stops[i]*256, 2))
+            print(f"{n_steps=}")
+            if is_last_color_pair and total_steps+n_steps < 256:
+                n_steps += 1
+            if is_last_color_pair and total_steps+n_steps > 256:
+                n_steps -= 1
+            total_steps += n_steps
+            linspaces.append(np.linspace(hex2rgb(color_stops[i]), hex2rgb(color_stops[i+1]), n_steps, endpoint=is_last_color_pair))
+        RGB = np.round(np.concatenate(linspaces)).astype(np.uint8)
+        print(RGB.shape)
+        # correct_RGBA = original_gen_gradient(grad).reshape(256, 4)[:-1, :3]
+        # comparison = RGB+1 == correct_RGBA
+        assert RGB.shape == (256, 3)
+        RGBA = np.hstack([RGB, np.arange(0, 256, dtype=np.uint8).reshape(256, 1)])
+        reshaped_RGBA = RGBA.reshape((256, 1, 4))
+        return reshaped_RGBA
 
-        canvas: QImage = QImage(1, 256, QImage.Format.Format_RGB32)
-        painter: QPainter = QPainter(canvas)
-        first_point: QPoint = QPoint(0, 0)
-        second_point: QPoint = QPoint(0, 256)
-        gradient: QLinearGradient = QLinearGradient(first_point, second_point)
-        canvas.width = 1
-        canvas.height = 256
-
-        for i in grad:
-            gradient.setColorAt(i, QColor(grad[i]))
-
-        brush: QBrush = QBrush(gradient)
-        painter.setBrush(brush)
-        painter.fillRect(QRect(first_point, second_point), brush)
-        painter.end()
-
-        return cv2.cvtColor(qt_image_to_array(canvas), cv2.COLOR_BGRA2RGBA)
-
-    @staticmethod
-    def _colorized(bw_heatmap: np.ndarray, gradient: np.ndarray) -> np.ndarray:
+    def _colorized(self, bw_heatmap: np.ndarray, gradient: np.ndarray) -> np.ndarray:
         """Colorizes the black and white heatmap (`bw_heatmap`) with the color
         of the chosen gradient (`gradient`).
 
@@ -353,7 +361,7 @@ class Heatmap:
         #TODO: Change the alpha value of the gradient in _gen_gradient?
         assert gradient.shape == (256, 1, 4), \
                 f"The gradient must be a 256x1x4 numpy array! " \
-                "The provided array has dimensions {gradient.shape}."
+                f"The provided array has dimensions {gradient.shape}."
         # Mask to select only the alpha value of the gradient image which is a 256×1×4 (h×w×depth) image
         mask = np.array([[[False, False, False, True]]]*256)
         indices = np.indices(gradient.shape)[0]
