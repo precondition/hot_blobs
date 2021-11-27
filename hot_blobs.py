@@ -380,6 +380,27 @@ class Heatmap:
         return gradient[bw_heatmap][:, :, 0, :]
 
     def _draw_stamp(self, canvas: np.ndarray, x: int, y: int, opacity: float) -> None:
+        """Draws a translucent stamp on the `canvas` with the circle center set on (`x`, `y`).
+
+        This is a void method; `canvas` is modified in-place.
+
+        Params
+        ------
+        canvas: np.ndarray
+            The current most up-to-date version of the black and white heatmap
+            overlay image of dimensions self.width×self.height
+
+        x: int
+            Coordinate of stamp center point in the x-axis
+
+        y: int
+            Coordinate of stamp center point in the y-axis
+
+        opacity: float
+            Float included between 0 and 1 that sets the opacity of the stamp layer
+            to overlay over the canvas.
+        """
+
         if y >= canvas.shape[0] or x >= canvas.shape[1]:
             # The stamp is beyond the south or east borders of the canvas
             return
