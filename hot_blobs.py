@@ -73,6 +73,13 @@ class PresetGradients:
     complete_list = [default_gradient, sweet_period, fabled_sunset, dense_water, sublime, argon, king_yna]
 
 
+def hex2rgb(h):
+    if isinstance(h, Iterable) and len(h) == 3 and isinstance(h[0], int):
+        return h
+    h = h.lstrip("#")
+    return [int(h[i:i+2], 16) for i in range(0, 6, 2)]
+
+
 class Heatmap:
     """
     Class for producing a heatmap in the form of a RGBA uint8 matrix.
