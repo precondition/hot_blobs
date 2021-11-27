@@ -384,8 +384,8 @@ class Heatmap:
         """
 
         assert gradient.shape == (256, 1, 4), \
-                f"The gradient must be a 256x1x4 numpy array! " \
-                f"The provided array has dimensions {gradient.shape}."
+            f"The gradient must be a 256x1x4 numpy array! " \
+            f"The provided array has dimensions {gradient.shape}."
         # Get column vector of the alpha values of each pixel in the grayscale heatmap
         # A fourth extra axis of length 1 is produced so we index it to remove it
         # and thus get an array that has the same dimensions as the background image.
