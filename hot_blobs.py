@@ -1,7 +1,6 @@
 from typing import Dict, Union, Tuple, Iterable, Hashable, List, Collection
 from collections import Counter
 from math import ceil
-from time import time
 import numpy as np
 import cv2
 
@@ -449,28 +448,16 @@ class Heatmap:
         """
         assert 0 <= min_opacity and min_opacity <= 1, "The minimum opacity must be a float in the range [0;1]."
         if self._stamp is None:
-            start = time()
             self.stamp()
-            end = time()
-            print(f"Setting the stamp took {(end - start)*1000:.10f} milliseconds!")
         canvas = np.zeros([self.height, self.width], dtype=float)
-        start = time()
         for (x, y), value in self._data.items():
             # Draw a black stamp at x, y whose opacity is set to the normalized value
             opacity = min(max(value/self._max, min_opacity), 1)
             self._draw_stamp(canvas, x-self._r2, y-self._r2, opacity)
-        end = time()
-        print(f'Drawing all the stamps took {(end - start)*1000:.10f} milliseconds!')
-        # Convert from float64 matrix with values in the domain [0;1] 
+        # Convert from float64 matrix with values in the domain [0;1]
         # to a uint8 matrix with values in the domain [0;255].
         # This is a faster way of doing `(canvas*255).astype(np.uint8)`
         image_data: np.ndarray = cv2.convertScaleAbs(src=canvas, alpha=255)
-        start = time()
         grad: np.ndarray = self._gen_gradient(self._chosen_gradient)
-        end = time()
-        print(f"Creating the gradient took {(end - start)*1000:.10f} milliseconds!")
-        start = time()
         colorized_image_data = self._colorized(image_data, grad)
-        end = time()
-        print(f"Colorizing the heatmap took {(end - start)*1000:.10f} milliseconds!")
         return colorized_image_data
