@@ -175,10 +175,8 @@ class Heatmap:
 
     @staticmethod
     def _sigma(x: Union[int, float]) -> int:
-        """TODO
-        This is the sigma function used by OpenCV to compute the Gaussian standard
+        """Calculates the sigma function used by OpenCV to compute the Gaussian standard
         deviation from the kernel size aka the blur factor in our case.
-        Source: https://docs.opencv.org/2.4/modules/imgproc/doc/filtering.html#getgaussiankernel
 
         The output must be an integer and to do that `ceil` is used to round up and thus avoid 0.
 
@@ -189,8 +187,12 @@ class Heatmap:
 
         Returns
         -------
-            int
-                Gaussian standard deviation
+        int
+            Gaussian standard deviation
+
+        Reference
+        ---------
+        Source: https://docs.opencv.org/2.4/modules/imgproc/doc/filtering.html#getgaussiankernel
         """
         return ceil(0.3*((x-1)*0.5 - 1) + 0.8)
 
