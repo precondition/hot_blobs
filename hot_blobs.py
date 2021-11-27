@@ -1,4 +1,4 @@
-from typing import Dict, Union, Tuple, Iterable, Hashable, List
+from typing import Dict, Union, Tuple, Iterable, Hashable, List, Collection
 from collections import Counter
 from math import ceil
 from time import time
@@ -73,8 +73,8 @@ class PresetGradients:
     complete_list = [default_gradient, sweet_period, fabled_sunset, dense_water, sublime, argon, king_yna]
 
 
-def hex2rgb(h):
-    if isinstance(h, Iterable) and len(h) == 3 and isinstance(h[0], int):
+def hex2rgb(h: Union[str, Collection[int, int, int]]) -> Collection[int, int, int]:
+    if isinstance(h, Collection) and len(h) == 3 and isinstance(h[0], int):
         return h
     h = h.lstrip("#")
     return [int(h[i:i+2], 16) for i in range(0, 6, 2)]
