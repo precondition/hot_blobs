@@ -329,6 +329,8 @@ class Heatmap:
         np.ndarray
             256×1×4 numpy array with the alpha channel ([:, :, 3]) all equal to 255.
         """
+
+        # TODO: Rewrite this slow ugly piece of code
         grad[0.0] = grad.get(0.0, "#000000")  # default starting color is black
         # Converting dict_values to tuple to allow indexing
         numeric_stops, color_stops = zip(*sorted(grad.items()))
