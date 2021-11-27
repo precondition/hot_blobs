@@ -7,6 +7,7 @@ import cv2
 
 RGB_Tuple = Tuple[np.uint8, np.uint8, np.uint8]
 
+
 class PresetGradients:
 
     # default_gradient = {
@@ -470,4 +471,3 @@ class Heatmap:
         end = time()
         print(f"Colorizing the heatmap took {(end - start)*1000:.10f} milliseconds!")
         return colorized_image_data
-
