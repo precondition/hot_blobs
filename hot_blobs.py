@@ -365,15 +365,9 @@ class Heatmap:
             self.w×self.h×4 array of uint8's representing the colorised heatmap in RGBA format.
         """
 
-        #TODO: Change the alpha value of the gradient in _gen_gradient?
         assert gradient.shape == (256, 1, 4), \
                 f"The gradient must be a 256x1x4 numpy array! " \
                 f"The provided array has dimensions {gradient.shape}."
-        # Mask to select only the alpha value of the gradient image which is a 256×1×4 (h×w×depth) image
-        mask = np.array([[[False, False, False, True]]]*256)
-        indices = np.indices(gradient.shape)[0]
-        # Replace the constant 255 alpha value of the gradient by the index of the row
-        gradient[mask] = indices[mask]
         # Get column vector of the alpha values of each pixel in the grayscale heatmap
         # A fourth extra axis of length 1 is produced so we index it to remove it
         # and thus get an array that has the same dimensions as the background image.
