@@ -354,7 +354,8 @@ class Heatmap:
         reshaped_RGBA = RGBA.reshape((256, 1, 4))
         return reshaped_RGBA
 
-    def _colorized(self, bw_heatmap: np.ndarray, gradient: np.ndarray) -> np.ndarray:
+    @staticmethod
+    def _colorized(bw_heatmap: np.ndarray, gradient: np.ndarray) -> np.ndarray:
         """Colorizes the black and white heatmap (`bw_heatmap`) with the color
         of the chosen gradient (`gradient`).
 
