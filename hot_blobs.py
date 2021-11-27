@@ -310,7 +310,8 @@ class Heatmap:
         self._chosen_gradient = grad
         return self
 
-    def _gen_gradient(self, grad: Dict[float, str] = PresetGradients.default_gradient) -> np.ndarray:
+    @staticmethod
+    def _gen_gradient(grad: Dict[float, str] = PresetGradients.default_gradient) -> np.ndarray:
         """Generates a 256×1×4 linear gradient image in RGBA format.
 
         Linear interpolation in the RGB colorspace is used to interpolate between
