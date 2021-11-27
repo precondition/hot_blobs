@@ -1,41 +1,11 @@
-from PyQt5.QtCore import Qt, QPoint, QRect
-from PyQt5.QtGui import QPainter, QBrush, QLinearGradient, QColor, QPixmap, QImage
-from typing import Dict, Union, Tuple, Iterable, Hashable
+from typing import Dict, Union, Tuple, Iterable, Hashable, List
 from collections import Counter
-import numpy as np
-import copy
 from math import ceil
-import cv2
 from time import time
+import numpy as np
+import cv2
 
-
-def qt_image_to_array(img: QImage, share_memory=False) -> np.ndarray:
-    """
-    Creates a numpy array from a QImage.
-
-   If share_memory is True, the numpy array and the QImage is shared.
-   Be careful: make sure the numpy array is destroyed before the image,
-   otherwise the array will point to unreserved memory!
-
-   NOTE: Despite the format of the image being Format_(A)RGB32,
-         each element of the matrix is BGRA.
-    """
-    assert isinstance(img, QImage), "img must be a QtGui.QImage object but is actually {}".format(type(img))
-
-    img_size = img.size()
-    buffer = img.constBits()
-    n_bits_image = img_size.width() * img_size.height() * img.depth()
-    buffer.setsize(n_bits_image//8)
-
-    # Note the different width height parameter order!
-    arr = np.ndarray(shape = (img_size.height(), img_size.width(), img.depth()//8),
-                 buffer = buffer,
-                 dtype  = np.uint8)
-
-    if share_memory:
-        return arr
-    else:
-        return copy.deepcopy(arr)
+RGB_Tuple = Tuple[np.uint8, np.uint8, np.uint8]
 
 class PresetGradients:
 
@@ -81,10 +51,10 @@ class PresetGradients:
     }
 
     sublime = {
-        0.0: QColor(13, 15, 140),
-        0.4: QColor(13, 15, 140),
-        0.7: QColor(217, 70, 239),
-        1.0: QColor(135, 4, 23)
+        0.0: (13, 15, 140),
+        0.4: (13, 15, 140),
+        0.7: (217, 70, 239),
+        1.0: (135, 4, 23)
     }
 
     argon = {
@@ -123,7 +93,7 @@ class Heatmap:
         self._data: Counter = Counter()
         # h×w×1 array of values between 0 and 1 (initialized to None to detect that no stamp has been generated yet)
         self._stamp: np.ndarray = None
-        self._chosen_gradient: Dict[float, Union[str, QColor]] = PresetGradients.default_gradient
+        self._chosen_gradient: Dict[float, Union[str, RGB_Tuple]] = PresetGradients.default_gradient
 
     def data(self, data: Union[Iterable[Tuple[int, int]], Dict[Tuple[int, int], int]], compute_max: bool = True) -> 'Heatmap':
         """TODO docstring"""
@@ -299,7 +269,7 @@ class Heatmap:
         self.height = h
         return self
 
-    def gradient(self, grad: Dict[float, Union[str, QColor]]) -> 'Heatmap':
+    def gradient(self, grad: Dict[float, Union[str, RGB_Tuple]]) -> 'Heatmap':
         """Sets the color gradient to use in the heatmap to `grad`.
 
         Params
@@ -406,7 +376,6 @@ class Heatmap:
         # Copying the stamp overlaid onto the canvas into the RoI
         canvas[max(0, y):y+self._stamp.shape[0], max(0, x):x+self._stamp.shape[1]] = stamped_cropped_canvas
 
-    #TODO: rename to "draw_image"
     def generate_image(self, min_opacity: float = 0.05) -> np.ndarray:
         """Generates the final heatmap image.
 
