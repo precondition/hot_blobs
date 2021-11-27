@@ -1,7 +1,8 @@
+import random
 import cv2
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
-from PyQt5.QtGui import QPainter, QBrush, QPen, QLinearGradient, QColor, QPixmap, QImage
-from PyQt5.QtCore import Qt, QPoint, QRect
+from hot_blobs import PresetGradients
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtGui import QPixmap, QImage
 
 def RGBA_to_QPixmap(matrix):
     # The ARGB32 QImage format requires a matrix in BGRA format for its constructor
