@@ -1,6 +1,7 @@
 # Hot Blobs
 
-A Python library for drawing heatmap overlays. Inspired by [simpleheat](https://github.com/mourner/simpleheat) (JS).
+A Python library for drawing heatmap overlays with the same look and feel as
+[simpleheat](https://github.com/mourner/simpleheat) and [heatmap.js](https://github.com/pa7/heatmap.js).
 
 ![Glamor shot]()
 
@@ -67,8 +68,11 @@ Image.fromarray(heatmap_matrix).save("basic_heatmap_example.png")
 See the `demo/` directory for more examples.
 
 
+<!-- WIP
 ## Prior Art
 
 This is not the first nor the only Python heatmap library, but I developed it because none of the available offerings suited me.
 
 First, let's cite the №1 result you get when searching for "heatmap python" online: `seaborn`. While `seaborn` is a fine data-visualisation library that produces pretty heatmaps, they're not the kind of heatmap that you would overlay over a background picture.
+
+-->
